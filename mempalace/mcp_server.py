@@ -29,10 +29,10 @@ from pathlib import Path
 
 from .config import MempalaceConfig, sanitize_name, sanitize_content
 from .version import __version__
-import chromadb
 from .query_sanitizer import sanitize_query
 from .searcher import search_memories
 from .palace_graph import traverse, find_tunnels, graph_stats
+from .palace import get_collection as _palace_get_collection
 
 from .knowledge_graph import KnowledgeGraph
 
@@ -67,9 +67,7 @@ else:
     _kg = KnowledgeGraph()
 
 
-_client_cache = None
 _collection_cache = None
-_palace_db_inode = 0  # inode of chroma.sqlite3 at cache time
 
 
 # ==================== WRITE-AHEAD LOG ====================
@@ -120,41 +118,17 @@ def _wal_log(operation: str, params: dict, result: dict = None):
         logger.error(f"WAL write failed: {e}")
 
 
-def _get_client():
-    """Return a ChromaDB PersistentClient, reconnecting if the database changed on disk.
-
-    Detects palace rebuilds (repair/nuke/purge) by checking the inode of
-    chroma.sqlite3.  A full rebuild replaces the file, changing the inode.
-    """
-    global _client_cache, _collection_cache, _palace_db_inode, _metadata_cache, _metadata_cache_time
-    db_path = os.path.join(_config.palace_path, "chroma.sqlite3")
-    try:
-        current_inode = os.stat(db_path).st_ino
-    except OSError:
-        current_inode = 0
-
-    if _client_cache is None or current_inode != _palace_db_inode:
-        _client_cache = chromadb.PersistentClient(path=_config.palace_path)
-        _collection_cache = None
-        _metadata_cache = None
-        _metadata_cache_time = 0
-        _palace_db_inode = current_inode
-    return _client_cache
+_collection_cache = None
 
 
 def _get_collection(create=False):
-    """Return the ChromaDB collection, caching the client between calls."""
+    """Return the palace collection, auto-detecting backend."""
     global _collection_cache, _metadata_cache, _metadata_cache_time
     try:
-        client = _get_client()
-        if create:
-            _collection_cache = client.get_or_create_collection(
-                _config.collection_name, metadata={"hnsw:space": "cosine"}
+        if _collection_cache is None:
+            _collection_cache = _palace_get_collection(
+                _config.palace_path, _config.collection_name,
             )
-            _metadata_cache = None
-            _metadata_cache_time = 0
-        elif _collection_cache is None:
-            _collection_cache = client.get_collection(_config.collection_name)
             _metadata_cache = None
             _metadata_cache_time = 0
         return _collection_cache

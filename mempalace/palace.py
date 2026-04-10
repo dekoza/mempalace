@@ -1,12 +1,13 @@
 """
 palace.py — Shared palace operations.
 
-Consolidates collection access patterns used by both miners and the MCP server.
+Consolidates database access patterns used by both miners and the MCP server.
+Backend-agnostic: works with LanceDB (default) or ChromaDB (legacy).
 """
 
 import os
 
-from .backends.chroma import ChromaBackend
+from .db import open_collection, detect_backend
 
 SKIP_DIRS = {
     ".git",
@@ -34,19 +35,19 @@ SKIP_DIRS = {
     "target",
 }
 
-_DEFAULT_BACKEND = ChromaBackend()
 
+def get_collection(palace_path: str, collection_name: str = "mempalace_drawers",
+                   backend: str = None, embedder=None):
+    """Get or create the palace collection.
 
-def get_collection(
-    palace_path: str,
-    collection_name: str = "mempalace_drawers",
-    create: bool = True,
-):
-    """Get the palace collection through the backend layer."""
-    return _DEFAULT_BACKEND.get_collection(
-        palace_path,
+    This is the main entry point for all palace database access.
+    Auto-detects the backend (LanceDB or ChromaDB) based on existing data.
+    """
+    return open_collection(
+        palace_path=palace_path,
         collection_name=collection_name,
-        create=create,
+        backend=backend,
+        embedder=embedder,
     )
 
 
