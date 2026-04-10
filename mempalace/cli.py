@@ -402,11 +402,17 @@ def cmd_sync(args):
     from .sync_client import SyncClient
     from .sync_meta import NodeIdentity
     from .palace import get_collection
+    from .backends import detect_backend
 
     palace_path = os.path.expanduser(args.palace) if args.palace else MempalaceConfig().palace_path
     server_url = args.server
 
-    col = get_collection(palace_path)
+    if detect_backend(palace_path) == "chroma":
+        print(f"\n  Palace at {palace_path} uses ChromaDB.")
+        print("  Sync requires LanceDB. Run: mempalace migrate")
+        sys.exit(1)
+
+    col = get_collection(palace_path, backend="lance")
     identity = NodeIdentity()
     vv_path = os.path.join(palace_path, "version_vector.json")
     engine = SyncEngine(col, identity=identity, vv_path=vv_path)
@@ -932,7 +938,7 @@ def main():
         "serve",
         help="Start the sync server (run on your home machine)",
     )
-    p_serve.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
+    p_serve.add_argument("--host", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
     p_serve.add_argument("--port", type=int, default=7433, help="Port (default: 7433)")
 
     # sync

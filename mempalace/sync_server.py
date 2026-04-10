@@ -32,8 +32,15 @@ def _get_engine() -> SyncEngine:
         palace_path = _config.palace_path
 
         from .palace import get_collection
+        from .backends import detect_backend
 
-        col = get_collection(palace_path)
+        if detect_backend(palace_path) == "chroma":
+            raise RuntimeError(
+                f"Palace at {palace_path} uses ChromaDB. "
+                "Sync requires LanceDB. Run: mempalace migrate"
+            )
+
+        col = get_collection(palace_path, backend="lance")
 
         identity = NodeIdentity()
         vv_path = os.path.join(palace_path, "version_vector.json")
