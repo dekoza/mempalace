@@ -31,7 +31,7 @@ from .version import __version__
 from .query_sanitizer import sanitize_query
 from .searcher import search_memories
 from .palace_graph import traverse, find_tunnels, graph_stats
-import chromadb
+from .palace import get_collection as _palace_get_collection
 
 from .knowledge_graph import KnowledgeGraph
 
@@ -106,22 +106,16 @@ _collection_cache = None
 
 
 def _get_client():
-    """Return a singleton ChromaDB PersistentClient."""
-    global _client_cache
-    if _client_cache is None:
-        _client_cache = chromadb.PersistentClient(path=_config.palace_path)
-    return _client_cache
+    """No-op — kept for compatibility. Backend handles connections."""
+    return None
 
 
 def _get_collection(create=False):
-    """Return the ChromaDB collection, caching the client between calls."""
+    """Return the palace collection, auto-detecting backend."""
     global _collection_cache
     try:
-        client = _get_client()
-        if create:
-            _collection_cache = client.get_or_create_collection(_config.collection_name)
-        elif _collection_cache is None:
-            _collection_cache = client.get_collection(_config.collection_name)
+        if _collection_cache is None:
+            _collection_cache = _palace_get_collection(_config.palace_path, _config.collection_name)
         return _collection_cache
     except Exception:
         return None
