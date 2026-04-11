@@ -7,35 +7,37 @@ MemPalace provides an [MCP](https://modelcontextprotocol.io/) (Model Context Pro
 ### Claude Code
 
 ```bash
-claude mcp add mempalace -- python -m mempalace.mcp_server
+claude mcp add mempalace -- mempalace mcp run
 ```
 
 With a custom palace path:
 
 ```bash
-claude mcp add mempalace -- python -m mempalace.mcp_server --palace /path/to/palace
+claude mcp add mempalace -- mempalace mcp run --palace /path/to/palace
 ```
 
 ### Gemini CLI
 
 ```bash
-gemini mcp add mempalace /path/to/python -m mempalace.mcp_server --scope user
+gemini mcp add mempalace mempalace mcp run --scope user
 ```
 
-Use the absolute path to your Python binary. If using a virtual environment:
+If using a virtual environment where `mempalace` is not on PATH, use the full path to the binary:
 
 ```bash
-gemini mcp add mempalace /path/to/mempalace/.venv/bin/python3 -m mempalace.mcp_server --scope user
+gemini mcp add mempalace /path/to/mempalace/.venv/bin/mempalace mcp run --scope user
 ```
 
 ### Direct invocation
 
 ```bash
-python -m mempalace.mcp_server
-python -m mempalace.mcp_server --palace /custom/path
+mempalace mcp run
+mempalace mcp run --palace /custom/path
 ```
 
 The server reads JSON-RPC requests from stdin and writes responses to stdout. Logging goes to stderr.
+
+`python -m mempalace.mcp_server` also works but is not recommended — it breaks in pipx environments and requires the correct Python to be on PATH.
 
 ### Show setup command
 

@@ -93,7 +93,7 @@ MemPalace is most useful when your AI assistant can access it directly via MCP.
 ### Claude Code
 
 ```bash
-claude mcp add mempalace -- python -m mempalace.mcp_server
+claude mcp add mempalace -- mempalace mcp run
 ```
 
 Restart Claude Code, then ask it anything about your past work. It calls `mempalace_search` automatically.
@@ -101,7 +101,7 @@ Restart Claude Code, then ask it anything about your past work. It calls `mempal
 ### Gemini CLI
 
 ```bash
-gemini mcp add mempalace /path/to/python -m mempalace.mcp_server --scope user
+gemini mcp add mempalace mempalace mcp run --scope user
 ```
 
 Use the absolute path to your Python binary if using a virtual environment.
@@ -111,7 +111,8 @@ Use the absolute path to your Python binary if using a virtual environment.
 Start the server directly:
 
 ```bash
-python -m mempalace.mcp_server
+mempalace mcp run
+mempalace mcp run --palace /custom/path
 ```
 
 The MCP server communicates via JSON-RPC over stdin/stdout. See [mcp-server.md](mcp-server.md) for the full tool reference.

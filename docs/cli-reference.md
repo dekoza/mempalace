@@ -134,6 +134,18 @@ Show the MCP setup command for connecting MemPalace to your AI client.
 mempalace mcp [--palace PATH]
 ```
 
+## mempalace mcp run
+
+Start the MCP server (JSON-RPC over stdin/stdout). This is the recommended way to connect MemPalace to MCP-compatible AI assistants.
+
+```bash
+mempalace mcp run [--palace PATH]
+```
+
+| Argument | Description |
+|----------|-------------|
+| `--palace PATH` | Override the palace directory |
+
 ## mempalace repair
 
 Rebuild the palace vector index from stored data. Useful after ChromaDB corruption or segfaults.

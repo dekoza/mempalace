@@ -55,10 +55,10 @@ Then connect your AI assistant:
 
 ```bash
 # Claude Code
-claude mcp add mempalace -- python -m mempalace.mcp_server
+claude mcp add mempalace -- mempalace mcp run
 
 # Gemini CLI (use absolute path to python for venvs)
-gemini mcp add mempalace /path/to/python -m mempalace.mcp_server --scope user
+gemini mcp add mempalace mempalace mcp run --scope user
 ```
 
 Now ask your AI anything about your past work — it searches the palace automatically.

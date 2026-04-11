@@ -55,7 +55,7 @@ Configuration values are resolved in this order (first match wins):
 3. **Config file** (`~/.mempalace/config.json`)
 4. **Defaults** (hardcoded in `config.py`)
 
-Note: most CLI commands pass the resolved `--palace` value directly without exporting an env var. The MCP server (`python -m mempalace.mcp_server --palace ...`) is the exception — it sets `MEMPALACE_PALACE_PATH` so downstream config reads pick it up.
+Note: most CLI commands pass the resolved `--palace` value directly without exporting an env var. The MCP server (`mempalace mcp run --palace ...` or `python -m mempalace.mcp_server --palace ...`) is the exception — it sets `MEMPALACE_PALACE_PATH` so downstream config reads pick it up.
 
 ## identity.txt
 
@@ -105,7 +105,7 @@ Maps name variants to canonical names. Supported by the config loader but not ye
 The MCP server accepts a `--palace` flag to override the palace path:
 
 ```bash
-python -m mempalace.mcp_server --palace /custom/path/to/palace
+mempalace mcp run --palace /custom/path/to/palace
 ```
 
 The knowledge graph database is placed alongside the palace when `--palace` is used, at `<palace_path>/knowledge_graph.sqlite3`. Without `--palace`, it defaults to `~/.mempalace/knowledge_graph.sqlite3`.
