@@ -54,6 +54,12 @@ mempalace search "test query"
 The migrator backs up your ChromaDB data to `<palace>.chroma-backup/` before
 converting.
 
+> **Embedding model consistency:** `mempalace migrate` transfers your original
+> ChromaDB embedding vectors as-is — no re-embedding occurs.  If the original
+> palace used a different embedder than your current config, run
+> `mempalace reindex` after migration to re-embed all drawers with the active
+> model.
+
 **Force a specific backend** (rare):
 
 ```bash
