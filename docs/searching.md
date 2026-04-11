@@ -136,7 +136,7 @@ from mempalace.searcher import SearchError
 
 When called through the MCP server, search queries are sanitized by `query_sanitizer.py` to strip system prompt contamination. This prevents AI assistants from accidentally including their entire system prompt in the search query, which degrades search quality.
 
-The sanitizer is transparent — if it modifies the query, the response includes a `query_sanitized` flag and the cleaned query text.
+The sanitizer is transparent — if it modifies the query, the response includes a `query_sanitized` flag and a `sanitizer` object with the `clean_query` text, original and cleaned lengths, and the sanitization method used.
 
 ## Memory layer search
 

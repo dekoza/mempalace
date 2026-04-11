@@ -57,8 +57,8 @@ Then connect your AI assistant:
 # Claude Code
 claude mcp add mempalace -- python -m mempalace.mcp_server
 
-# Gemini CLI
-gemini mcp add mempalace python -m mempalace.mcp_server --scope user
+# Gemini CLI (use absolute path to python for venvs)
+gemini mcp add mempalace /path/to/python -m mempalace.mcp_server --scope user
 ```
 
 Now ask your AI anything about your past work — it searches the palace automatically.
@@ -75,9 +75,9 @@ WING (project or person)
         └── DRAWER (verbatim text chunk)
 ```
 
-- **Wings** — one per project, person, or domain. `wing_myapp`, `wing_kai`.
+- **Wings** — one per project, person, or domain. `myapp`, `kai`.
 - **Rooms** — specific topics within a wing. `auth-migration`, `pricing-model`.
-- **Tunnels** — when the same room appears in multiple wings, a tunnel connects them. The room `auth-migration` in both `wing_kai` and `wing_myapp` means Kai worked on that topic in that project.
+- **Tunnels** — when the same room appears in multiple wings, a tunnel connects them. The room `auth-migration` in both `kai` and `myapp` means Kai worked on that topic in that project.
 - **Halls** — memory type corridors: `hall_facts`, `hall_events`, `hall_discoveries`, `hall_preferences`, `hall_advice`.
 - **Drawers** — the actual verbatim text. Never summarized.
 

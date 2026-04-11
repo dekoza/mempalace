@@ -70,7 +70,7 @@ List all wings with their drawer counts.
 
 **Parameters:** none
 
-**Returns:** `{"wings": {"wing_myapp": 142, "wing_kai": 87, ...}}`
+**Returns:** `{"wings": {"myapp": 142, "kai": 87, ...}}`
 
 #### mempalace_list_rooms
 
@@ -86,7 +86,7 @@ Full wing → room → drawer count tree.
 
 **Parameters:** none
 
-**Returns:** `{"taxonomy": {"wing_myapp": {"auth": 12, "billing": 8}, ...}}`
+**Returns:** `{"taxonomy": {"myapp": {"auth": 12, "billing": 8}, ...}}`
 
 #### mempalace_search
 
@@ -123,7 +123,7 @@ Returns the AAAK dialect specification.
 
 #### mempalace_add_drawer
 
-Store verbatim content in the palace. Uses a deterministic ID (wing + room + content hash), so upserting the same content is a no-op.
+Store verbatim content in the palace. Uses a deterministic ID based on wing + room + the first 100 characters of content, so upserting the same content is a no-op when those values match. Different drawers with the same first 100 characters of content can collide.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|

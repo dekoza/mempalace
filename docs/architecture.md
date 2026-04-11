@@ -24,9 +24,9 @@ The palace organizes memories using a spatial metaphor. Each level of the hierar
 A wing represents a person, project, or domain. Every memory belongs to exactly one wing.
 
 ```
-wing_myapp        — a project
-wing_kai          — a person
-wing_hardware     — a domain
+myapp             — a project
+kai               — a person
+hardware          — a domain
 ```
 
 Wing names are stored as the `wing` metadata field on each ChromaDB document.
@@ -36,9 +36,9 @@ Wing names are stored as the `wing` metadata field on each ChromaDB document.
 A room is a specific topic within a wing. The same room name can appear in multiple wings — when it does, it creates a tunnel (see below).
 
 ```
-wing_myapp / auth-migration
-wing_myapp / pricing-model
-wing_myapp / ci-pipeline
+myapp / auth-migration
+myapp / pricing-model
+myapp / ci-pipeline
 ```
 
 Room names are stored as the `room` metadata field. Rooms are auto-detected from folder structure during `mempalace init`, or assigned during conversation mining based on content analysis.
@@ -62,9 +62,9 @@ Halls are assigned during general extraction mode (`--extract general`). In defa
 When the same room name appears in multiple wings, a tunnel connects them. This enables cross-domain queries.
 
 ```
-wing_kai       / auth-migration  →  "Kai debugged the OAuth token refresh"
-wing_myapp     / auth-migration  →  "team decided to migrate auth to Clerk"
-wing_priya     / auth-migration  →  "Priya approved Clerk over Auth0"
+kai       / auth-migration  →  "Kai debugged the OAuth token refresh"
+myapp     / auth-migration  →  "team decided to migrate auth to Clerk"
+priya     / auth-migration  →  "Priya approved Clerk over Auth0"
 ```
 
 Same room, three wings. A tunnel connects them. Use `mempalace_find_tunnels` or `mempalace_traverse` to navigate these connections.
@@ -185,7 +185,7 @@ Facts (subject → predicate → object)
 | `~/.mempalace/config.json` | Global configuration |
 | `~/.mempalace/palace/` | ChromaDB vector store (default) |
 | `~/.mempalace/identity.txt` | L0 identity text |
-| `~/.mempalace/wing_config.json` | Wing definitions and keywords |
+| `<project>/mempalace.yaml` | Project-specific wing and room definitions |
 | `~/.mempalace/people_map.json` | Name variant mappings |
 | `~/.mempalace/knowledge_graph.sqlite3` | Knowledge graph database |
 | `~/.mempalace/wal/write_log.jsonl` | Write-ahead log (audit trail) |

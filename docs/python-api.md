@@ -258,7 +258,7 @@ dialect = Dialect.from_config("entities.json")
 
 compressed = dialect.compress(text, metadata={})
 stats = dialect.compression_stats(original, compressed)
-# {"original_chars": 500, "compressed_chars": 180, "original_tokens": 125, "compressed_tokens": 45, "ratio": 2.8}
+# {"original_chars": 500, "summary_chars": 180, "original_tokens_est": 125, "summary_tokens_est": 45, "size_ratio": 2.8, "note": "Estimates only. ..."}
 
 token_count = Dialect.count_tokens(text)
 ```

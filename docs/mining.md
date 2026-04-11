@@ -120,6 +120,6 @@ MemPalace checks for duplicates before filing:
 
 - **Project mining** skips files already mined (by source file path + modification time).
 - **Conversation mining** skips files already mined (by source file path).
-- **MCP `add_drawer`** uses a deterministic ID derived from wing + room + content, so upserting the same content is a no-op.
+- **MCP `add_drawer`** uses a deterministic ID derived from wing + room + the first 100 characters of content, so upserting the same content is a no-op. Note: different content sharing the same first 100 characters will collide and be treated as `already_exists`.
 
 For bulk deduplication of an existing palace, see the `dedup.py` module.

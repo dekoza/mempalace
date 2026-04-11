@@ -34,8 +34,10 @@ mempalace init ~/projects/myapp
 This creates:
 
 - `~/.mempalace/config.json` — global configuration
-- `~/.mempalace/palace/` — the ChromaDB vector store (default location)
+- `~/projects/myapp/mempalace.yaml` — project wing and room definitions
 - `~/projects/myapp/entities.json` — detected people and projects (if any found)
+
+The ChromaDB vector store (`~/.mempalace/palace/` by default) is created later, on first `mine` or other ChromaDB access.
 
 The `init` command is interactive — it asks you to confirm detected entities. Use `--yes` to auto-accept everything.
 
