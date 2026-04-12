@@ -436,6 +436,9 @@ def open_collection(
     if backend is None:
         backend = detect_backend(palace_path)
 
+    if not create and not os.path.isdir(palace_path):
+        raise FileNotFoundError(palace_path)
+
     os.makedirs(palace_path, exist_ok=True)
     try:
         os.chmod(palace_path, 0o700)

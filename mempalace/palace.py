@@ -37,7 +37,8 @@ SKIP_DIRS = {
 
 
 def get_collection(
-    palace_path: str, collection_name: str = "mempalace_drawers", backend: str = None, embedder=None
+    palace_path: str, collection_name: str = "mempalace_drawers",
+    backend: str = None, embedder=None, create: bool = True,
 ):
     """Get or create the palace collection.
 
@@ -56,6 +57,7 @@ def get_collection(
         collection_name=collection_name,
         backend=backend,
         embedder=embedder,
+        create=create,
     )
 
 
