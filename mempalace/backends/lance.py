@@ -270,6 +270,20 @@ class LanceCollection(BaseCollection):
         filter_str = "id IN ('" + "','".join(escaped) + "')"
         self._table.delete(filter_str)
 
+    def update(self, **kwargs: Any) -> None:
+        """Update existing records by ID. Re-embeds if documents change."""
+        ids = kwargs.get("ids", [])
+        if not ids:
+            return
+        documents = kwargs.get("documents")
+        metadatas = kwargs.get("metadatas")
+        existing = self.get(ids=ids, include=["documents", "metadatas"])
+        if not existing["ids"]:
+            return
+        docs = documents if documents is not None else existing.get("documents", [""] * len(ids))
+        metas = metadatas if metadatas is not None else existing.get("metadatas", [{}] * len(ids))
+        self.upsert(documents=docs, ids=ids, metadatas=metas)
+
     def count(self) -> int:
         if self._table is None:
             return 0
