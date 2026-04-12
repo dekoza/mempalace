@@ -257,14 +257,14 @@ def test_list_embedders_returns_list():
         assert "notes" in e
 
 
-# ── embedding_model tracking in db.py ─────────────────────────────────
+# ── embedding_model tracking in LanceDB backend ──────────────────────
 
 
 def test_embedding_model_stored_in_metadata(tmp_path):
     """Verify the embedding model name is stored in each record's metadata."""
-    from mempalace.db import open_collection
+    from mempalace.palace import get_collection
 
-    col = open_collection(str(tmp_path / "palace"), backend="lance")
+    col = get_collection(str(tmp_path / "palace"), backend="lance")
     col.upsert(
         documents=["test document"],
         ids=["t1"],
@@ -280,7 +280,7 @@ def test_embedding_model_stored_in_metadata(tmp_path):
 
 def test_lance_dimension_mismatch_guard(tmp_path):
     """Reopening a LanceDB collection with a different embedder dimension must fail."""
-    from mempalace.db import open_collection
+    from mempalace.palace import get_collection
 
     class FakeEmbedder384:
         model_name = "fake-384"
@@ -295,20 +295,20 @@ def test_lance_dimension_mismatch_guard(tmp_path):
             return [[0.0] * 768 for _ in texts]
 
     palace = str(tmp_path / "palace")
-    col = open_collection(palace, backend="lance", embedder=FakeEmbedder384())
+    col = get_collection(palace, backend="lance", embedder=FakeEmbedder384())
     col.upsert(documents=["seed"], ids=["s1"], metadatas=[{"wing": "t", "room": "r", "source_file": ""}])
     assert col.count() == 1
 
     with pytest.raises(RuntimeError, match="dimension"):
-        open_collection(palace, backend="lance", embedder=FakeEmbedder768())
+        get_collection(palace, backend="lance", embedder=FakeEmbedder768())
 
 
 def test_lance_node_id_seq_are_filterable_columns(tmp_path):
     """node_id and seq must be top-level LanceDB columns, not buried in metadata_json."""
-    from mempalace.db import open_collection
+    from mempalace.palace import get_collection
 
     palace = str(tmp_path / "palace")
-    col = open_collection(palace, backend="lance")
+    col = get_collection(palace, backend="lance")
     col.upsert(
         documents=["doc one", "doc two"],
         ids=["d1", "d2"],

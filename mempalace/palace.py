@@ -7,7 +7,7 @@ Backend-agnostic: works with LanceDB (default) or ChromaDB (legacy).
 
 import os
 
-from .db import open_collection
+from .backends import detect_backend, LanceBackend, ChromaBackend
 
 SKIP_DIRS = {
     ".git",
@@ -35,6 +35,9 @@ SKIP_DIRS = {
     "target",
 }
 
+_lance_backend = LanceBackend()
+_chroma_backend = ChromaBackend()
+
 
 def get_collection(
     palace_path: str, collection_name: str = "mempalace_drawers",
@@ -43,21 +46,20 @@ def get_collection(
     """Get or create the palace collection.
 
     This is the main entry point for all palace database access.
-    If backend is not specified, consults MEMPALACE_BACKEND env var and
-    config, then falls back to auto-detection from existing data.
+    Auto-detects the backend (LanceDB or ChromaDB) based on existing data.
+    LanceDB is the default for new palaces.
     """
     if backend is None:
         from .config import MempalaceConfig
         configured = MempalaceConfig().backend
-        if configured:
-            backend = configured
+        backend = configured or detect_backend(palace_path)
 
-    return open_collection(
-        palace_path=palace_path,
-        collection_name=collection_name,
-        backend=backend,
-        embedder=embedder,
-        create=create,
+    if backend == "chroma":
+        return _chroma_backend.get_collection(
+            palace_path, collection_name=collection_name, create=create,
+        )
+    return _lance_backend.get_collection(
+        palace_path, collection_name=collection_name, create=create, embedder=embedder,
     )
 
 

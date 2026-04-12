@@ -161,7 +161,7 @@ def cmd_status(args):
 def cmd_repair(args):
     """Rebuild palace vector index from stored data."""
     import shutil
-    from .db import detect_backend
+    from .backends import detect_backend
 
     palace_path = os.path.expanduser(args.palace) if args.palace else MempalaceConfig().palace_path
 
@@ -273,9 +273,9 @@ def cmd_reindex(args):
     print(f"  Dimension: {embedder.dimension}")
 
     # Read all existing records
-    from .db import open_collection
+    from .palace import get_collection
 
-    col = open_collection(palace_path, embedder=embedder)
+    col = get_collection(palace_path, embedder=embedder)
     total = col.count()
 
     if total == 0:
@@ -379,7 +379,7 @@ def cmd_migrate(args):
         print(f"\n  No palace found at {palace_path}")
         return
 
-    from .db import detect_backend
+    from .backends import detect_backend
 
     current = detect_backend(palace_path)
 
@@ -437,14 +437,14 @@ def cmd_migrate(args):
     # Remove ChromaDB files, create fresh LanceDB palace
     shutil.rmtree(palace_path)
 
-    from .db import open_collection
+    from .palace import get_collection
 
     if has_embeddings:
         print("  Transferring with original embeddings (no re-embedding needed)...")
     else:
         print("  Re-embedding all drawers (ChromaDB embeddings not available)...")
 
-    lance_col = open_collection(palace_path, backend="lance")
+    lance_col = get_collection(palace_path, backend="lance")
 
     filed = 0
     for i in range(0, len(all_ids), batch_size):
@@ -468,7 +468,7 @@ def cmd_migrate(args):
             comp_data = comp_col.get(
                 limit=comp_total, include=["documents", "metadatas", "embeddings"]
             )
-            comp_lance = open_collection(palace_path, "mempalace_compressed", backend="lance")
+            comp_lance = get_collection(palace_path, "mempalace_compressed", backend="lance")
             comp_embs = (
                 comp_data.get("embeddings")
                 if comp_data.get("embeddings") and comp_data["embeddings"][0] is not None
